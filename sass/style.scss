@@ -1,0 +1,53 @@
+@import "./common/common";
+// 头部样式，在style.scss文件引入，没有实现样式抽取到一个文件
+//
+header {
+	position: fixed;
+	z-index: 99;
+	left: 0;
+	width: 100%;
+	height: 0.78125rem;
+	line-height: 0.78125rem;
+	background: $gray;
+	border-bottom: 2px solid $body-bg;
+	@include font-dpr(14px);
+}
+nav {
+	// padding-left: 0.444444rem;
+	height: 100%;
+	color: $gray-light;
+	a {
+		display: inline-block;
+		height: 0.5rem;
+		line-height: 0.5rem;
+		border: 0.04rem solid lighten($gray, 10%);
+		border-radius: 0.4rem;
+		color: $gray-light;
+		padding: 0 0.15625rem;
+		padding-left: 0;
+		.icon {
+			padding: 0 0.05rem 0 .1rem;
+			font-size: 0.3rem;
+		}
+	}
+	.header-record {
+		margin-left: 0.3125rem;
+		margin-right: 0.46875rem;
+		background: $gray-dark;
+	}
+	.header-storename {
+		margin-right: 0.46875rem;
+		background: $gray-dark;
+	}
+	.herder-currency {
+		color: $gold-dark;
+	}
+	.line {
+		display: none;
+		height: 50%;
+		// display: inline-block;
+		width: 1px;
+		background: #fff;
+    	vertical-align: middle;
+	}
+}

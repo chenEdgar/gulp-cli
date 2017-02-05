@@ -1,0 +1,43 @@
+
+$gray-dark:                 #252834 !default; // 默认值，赋值后覆盖
+$gray:                      #2b3040 !default;
+$gray-light:                #8F9CC7 !default;
+$gray-lighter:              #ced1dc !default;
+$gray-lightest:             #f7f7f9 !default;
+
+
+$brand-primary:             #0275d8 !default;
+$brand-success:             #515C8F !default;
+$brand-info:                #5bc0de !default;
+$brand-warning:             #f0ad4e !default;
+$brand-danger:              #9d2429 !default;
+$brand-inverse:             $gray-dark !default;
+$brand-life: 				#53BB3B !default;
+
+$gold: #FFFD00;
+$gold-dark: #E98A25;
+$yellow: #AE7E40;
+// Body
+//
+// Settings for the `<body>` element.
+
+$body-bg:    $gray-dark !default;
+$body-color: #ced1dc !default;
+
+
+// Links
+//
+// Style anchor elements.
+
+$link-color:            #ced1dc !default;
+$link-decoration:       none !default;
+$link-hover-color:      darken($link-color, 15%) !default;
+$link-hover-decoration: underline !default;
+
+// font
+//
+$font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !default;
+$font-family-serif:      Georgia, "Times New Roman", Times, serif !default;
+$font-family-monospace:  Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
+// $font-family-base:       $font-family-sans-serif !default;
+$font-family-base:       microsoft yahei !default;
