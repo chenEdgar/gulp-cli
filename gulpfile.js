@@ -26,7 +26,8 @@ var gulp = require('gulp'),
     browserSync = require('browser-sync').create(),//自动刷新
     del = require('del'),//清除文件
     gulpIf = require('gulp-if'),
-    revAll = require('gulp-rev-all'), // MD5
+    rev = require('gulp-rev'), // MD5
+    revCollector = require('gulp-rev-collector'),
     stripDebug = require('gulp-strip-debug'),
     gulpWebpack = require('webpack-stream'); //清楚文件
 
@@ -50,10 +51,15 @@ gulp.task('sass',function () {
             errorHandler: notify.onError('Error: <%= error.message %>')
         }))
         .pipe(sass(autoprefixer('safari 5','ie 9', 'opera 12.1', 'ios 6', 'android 4')))
-        .pipe(gulp.dest('dist/css/'))
+        // .pipe(rev())
+        // .pipe(rev.manifest())
+        .pipe(gulp.dest('static/dist/css/'))
         .pipe(rename({suffix: '.min'}))
         .pipe(cssmini())
-        .pipe(gulp.dest('dist/css'))
+        .pipe(rev())
+        .pipe(gulp.dest('static/dist/css/'))
+        .pipe(rev.manifest())
+        .pipe(gulp.dest('rev/css'))
         // .pipe(browserSync.stream())
         .pipe(reload({stream: true}))
 });
@@ -68,8 +74,11 @@ gulp.task('script', function () { // md5, 压缩
         .pipe(gulpIf(method == 'build', uglify())) // build:dev测试环境和产品
         .pipe(gulpIf(method == 'build', stripDebug())) // build:prod产品
         .pipe(gulpIf(method == 'build', rename({suffix: '.min'})))
+        .pipe(rev())
+        .pipe(gulp.dest('static/dist/js/'))
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest('dist/js/'))
+        .pipe(rev.manifest())
+        .pipe(gulp.dest('rev/js'))
         .pipe(reload({
             stream: true
         }))
@@ -82,25 +91,53 @@ gulp.task('jslib', function () {
             'lib/layer_mobile/layer.js'
         ])
         .pipe(concat('lib.js', {newLine: ';'}))
-        .pipe(gulp.dest('dist/js/'))
+        .pipe(rev())
+        .pipe(gulp.dest('static/dist/js/'))
         .pipe(uglify())
         .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest('dist/js/'))
+        .pipe(gulp.dest('static/dist/js/'))
+        .pipe(rev.manifest())
+        .pipe(gulp.dest('rev/libjs'))
 })
 gulp.task('csslib', function () {
 	return gulp.src(['lib/layer_mobile/need/layer.css'])
 		.pipe(concat('lib.css'))
-		.pipe(gulp.dest('dist/css/'))
+        .pipe(rev())
+		.pipe(gulp.dest('static/dist/css/'))
         .pipe(cssmini())
         .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest('dist/css/'))
+        .pipe(gulp.dest('static/dist/css/'))
+        .pipe(rev.manifest())
+        .pipe(gulp.dest('rev/libcss'))
+})
+
+gulp.task('rev', function() {
+    return gulp.src(['rev/**/*.json', 'index.html'])
+        .pipe(revCollector({
+            replaceReved: true, // 默认false，是否使用dirReplacements的规则替换模板文件中的文件引用地址；false，只是替换文件名
+            dirReplacements: {
+                // './static/dist/': '/dist/', // 只写一个不能替换
+                './static/dist/css/': '/dist/css/',
+                // './static/dist/js/': '/dist/js/',
+                // './static/dist/css/': '/dist/css/',
+                './static/dist/js/': '/dist/js/'
+                // '/cdn/': function(manifest_value) {
+                //     return '//cdn' + (Math.floor(Math.random() * 9) + 1) + '.' + 'exsample.dot' + '/img/' + manifest_value;
+                // }
+            }
+        }))
+        .pipe(gulp.dest('static'))
+})
+
+gulp.task('clean', function () {
+    del(['static'])
 })
 
 gulp.task('imagemin', function () {
     return gulp.src(['images/other/*.png','images/other/*.jpg'])
         // .pipe(imagemin()) // 似乎由于yarn的存在，imagemin依赖报错
-        .pipe(gulp.dest('dist/images/other/'))
+        .pipe(gulp.dest('static/dist/images/other/'))
 })
-gulp.task('server:dev', ['server', 'script', 'jslib', 'csslib','imagemin']);
-gulp.task('build:dev', ['sass', 'script', 'jslib','csslib','imagemin']);
-gulp.task('build:prod', ['sass', 'script','jslib', 'csslib','imagemin']);
+gulp.task('server:dev', ['server', 'script', 'jslib', 'csslib','imagemin', 'rev']);
+gulp.task('build:dev', ['clean','sass', 'script', 'jslib','csslib','imagemin', 'rev']);
+gulp.task('build:prod', ['clean','sass', 'script','jslib', 'csslib','imagemin', 'rev']);

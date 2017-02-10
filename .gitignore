@@ -1,0 +1,14 @@
+/.idea
+.buildpath
+.project
+.settings
+*.logs
+*.log
+log/*
+logs/*
+runtime/*
+/web/assets/*
+/compile/*
+/node_modules
+/static
+/rev
